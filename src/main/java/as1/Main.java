@@ -1,3 +1,5 @@
+package as1;
+
 import nu.pattern.OpenCV;
 import org.joml.Matrix4d;
 import org.joml.Vector3d;
@@ -16,15 +18,15 @@ import static org.opencv.core.CvType.CV_8UC3;
 public class Main {
 
     public static Matrix4d getViewMatrix(Vector3d eye) {
-        /*Matrix4d m = new Matrix4d();
+        Matrix4d m = new Matrix4d();
         m.lookAt(eye, new Vector3d(0, 0, 0), new Vector3d(0, 1, 0));
-        return m;*/
-        return new Matrix4d (
+        return m;
+        /*return new Matrix4d (
                 1, 0, 0, 0,
                 0, 1, 0, 0,
                 0, 0, 1, 0,
                 -eye.x, -eye.y, -eye.z, 1 // joml的矩阵需要转置
-        );
+        );*/
     }
 
     public Matrix4d getModelMatrix(double angle) {
@@ -38,7 +40,7 @@ public class Main {
     }
 
     public static Matrix4d getProjectionMatrix(double fov, double aspectRatio, double near, double far) {
-        double tanHalfFOV = Math.tan(Math.toRadians(fov) / 2.0);
+        /*double tanHalfFOV = Math.tan(Math.toRadians(fov) / 2.0);
         double zRange = far - near;
 
         return new Matrix4d(
@@ -46,14 +48,18 @@ public class Main {
                 0, 1 / tanHalfFOV, 0, 0,
                 0, 0, -(far + near) / zRange, -1,
                 0, 0, -(2 * near * far / zRange), 0
-        );
-        /*Matrix4d m = new Matrix4d();
+        );*/
+        Matrix4d m = new Matrix4d();
         m.perspective(Math.toRadians(fov), aspectRatio, near, far);
-        return m;*/
+        return m;
     }
 
     public static Matrix4d getRotation(Vector3d axis, float angle) {
-        double rad = Math.toRadians(angle);
+        Matrix4d m = new Matrix4d();
+        m.rotate(Math.toRadians(angle), axis);
+        return m;
+    }
+        /*double rad = Math.toRadians(angle);
         double c = Math.cos(rad);
         double s = Math.sin(rad);
         double oneminusc = 1.0 - c;
@@ -78,7 +84,7 @@ public class Main {
                 f10, f11, f12, 0,
                 f20, f21, f22, 0,
                 0,   0,   0,   1);
-    }
+    }*/
 
     static ByteBuffer vectors2data(List<Vector3d> vectorList) {
         float[] data = new float[vectorList.size() * 3];
@@ -94,7 +100,7 @@ public class Main {
         return byteBuffer;
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
 
         OpenCV.loadLocally();
 
@@ -134,26 +140,14 @@ public class Main {
             key = HighGui.waitKey(10);
             System.out.println("frame count: " + frame_count++ + "\n");
 
-//            angle += 10;
-//            theta += 10;
-//            phi += 10;
-            /*axis.x = Math.sin(Math.toRadians(theta)) * Math.cos(Math.toRadians(phi));
+            angle += 10;
+            theta += 10;
+            phi += 10;
+            axis.x = Math.sin(Math.toRadians(theta)) * Math.cos(Math.toRadians(phi));
             axis.y = Math.sin(Math.toRadians(theta)) * Math.sin(Math.toRadians(phi));
-            axis.z = Math.cos(Math.toRadians(phi));*/
+            axis.z = Math.cos(Math.toRadians(phi));
         }
         image.release();
 
-        /*Display display = new Display();
-        Shell shell = new Shell(display);
-        shell.setText("javrst");
-        shell.setLayout(new FillLayout());
-        shell.setSize(640, 480);
-        shell.open();
-        while (!shell.isDisposed()) {
-            if (!display.readAndDispatch()) {
-                display.sleep();
-            }
-        }
-        display.dispose();*/
     }
 }
